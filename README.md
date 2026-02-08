@@ -1,68 +1,96 @@
-# Resume Parsing Application
+# Resume Parser & Job Application Tracker
 
-A full-stack Resume Parsing application built using **Next.js** and **Supabase**.  
-The application allows users to upload resumes and extracts basic information which is then stored and displayed from a database.
+A modern full-stack web application that allows users to upload resumes, extract candidate details using OpenAI, and track job applications in a unified dashboard.
 
----
-
-## Overview
-
-This project demonstrates a basic understanding of frontend development, backend APIs, database integration, authentication, and file storage using modern web technologies.
-
-Users can upload resume files (PDF/DOCX), parse relevant details, and manage resume data through a simple user interface.
+This project was developed as part of a full-stack development assignment to demonstrate API integration, structured data extraction, database usage, and clean UI implementation.
 
 ---
 
-## Features
+## 🚀 Features
 
-- Upload resumes (PDF / DOCX)
-- Extract resume text
-- Parse basic details:
-  - Name
-  - Email
-  - Phone Number
-  - Skills
-- Store resume files in Supabase Storage
-- Store parsed data in Supabase PostgreSQL
-- Optional authentication using Supabase Auth
-- Clean and minimal UI
+### Resume Upload & Parsing
+
+* Upload resumes in **PDF or image format**
+* Resume content is parsed using **OpenAI API**
+* Extracted candidate details include:
+
+  * Full Name
+  * Email
+  * Phone Number
+* Parsed data is stored in the database
+* Uploaded resumes are listed with extracted data
+
+### Job Application Tracking
+
+* Add job applications
+* Track:
+
+  * Company Name
+  * Job Role
+  * Status (Applied, Interview, Offer, Rejected)
+  * Applied Date
+* Delete applications with in-app confirmation UI
+
+### Dashboard Overview
+
+* Total resumes parsed
+* Total job applications
+* Recent resumes list
+
+### UI & UX
+
+* Responsive layout for desktop and mobile
+* Hover interactions and cursor feedback
+* Smooth page transitions
+* Professional UI styling
 
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- Frontend: Next.js (App Router)
-- Backend: Next.js API Routes
-- Database: Supabase (PostgreSQL)
-- Storage: Supabase Storage
-- Authentication: Supabase Auth (optional)
+### Frontend
+
+* Next.js (App Router)
+* React
+* Tailwind CSS
+* Framer Motion (page transitions)
+
+### Backend
+
+* Next.js API routes
+* Supabase Database
+* OpenAI API
+
+### Validation
+
+* Zod schema validation for structured output
 
 ---
 
-## Folder Structure
+## 📁 Project Folder Structure
 
+```text
 resume-parser-tracker/
-│
 ├── app/
 │   ├── api/
-│   │   └── parse-resume/
+│   │   ├── parse-resume/
+│   │   │   └── route.ts
+│   │   └── resumes/
 │   │       └── route.ts
 │   │
 │   ├── dashboard/
 │   │   └── page.tsx
-│   │
 │   ├── jobs/
 │   │   └── page.tsx
-│   │
 │   ├── resumes/
 │   │   └── page.tsx
-│   │
 │   ├── upload/
 │   │   └── page.tsx
 │   │
+│   ├── favicon.ico
+│   ├── globals.css
 │   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
+│   └── page.tsx
 │
 ├── components/
 │   ├── Navbar.tsx
@@ -72,85 +100,151 @@ resume-parser-tracker/
 │   └── supabase.ts
 │
 ├── public/
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
 │
 ├── .env.local
 ├── .gitignore
-├── next.config.ts
 ├── package.json
-├── tailwind.config.js
 ├── tsconfig.json
 └── README.md
-
-
----
-
-## Environment Variables
-
-Create a `.env.local` file in the root directory and add the following values:
-
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url  
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
 ---
 
-## Installation
+## ⚙️ Setup Instructions
 
-Clone the repository:
+### 1. Clone Repository
 
-git clone https://github.com/your-username/resume-parser.git  
-cd resume-parser
+```bash
+git clone <your-repository-url>
+cd resume-parser-tracker
+```
 
-Install dependencies:
+### 2. Install Dependencies
 
+```bash
 npm install
+```
 
-Run the development server:
+### 3. Configure Environment Variables
 
+Create a file named .env.local in the root directory:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+OPENAI_API_KEY=your_openai_key
+```
+
+⚠️ Important:
+
+Never commit .env.local to GitHub
+
+.gitignore already prevents this
+
+### 4. Run Development Server
+
+```bash
 npm run dev
+```
 
-Open the application in your browser:
+Open the app at:
 
-http://localhost:3000
+[http://localhost:3000](http://localhost:3000)
 
----
+## 🗄 Database Schema Example
 
-## How It Works
+```sql
+create table resumes (
+  id uuid primary key default gen_random_uuid(),
+  full_name text,
+  email text,
+  phone text,
+  raw_text text,
+  created_at timestamp with time zone default now()
+);
 
-1. User uploads a resume file
-2. The file is stored in Supabase Storage
-3. Resume text is extracted on the backend
-4. Parsed details are saved to the Supabase database
-5. Parsed resume information is displayed on the UI
+create table job_applications (
+  id uuid primary key default gen_random_uuid(),
+  company text,
+  role text,
+  status text,
+  applied_date date,
+  resume_id uuid references resumes(id),
+  created_at timestamp with time zone default now()
+);
+```
 
----
+## 📹 Submission Checklist
 
-## Supabase Configuration
+Submission includes:
 
-- Uses Supabase free plan
-- Storage bucket configured for resume uploads
-- Row Level Security (RLS) disabled for demo purposes
-- Authentication can be enabled or disabled based on requirement
+GitHub repository containing source code
 
----
+README file with setup instructions
 
-## Limitations
+Demo video showing:
 
-- Resume parsing is basic and rule-based
-- No advanced AI or NLP processing
-- Designed for demo and evaluation purposes
+Resume upload
 
----
+Parsed resume data displayed
 
-## Future Improvements
+Job application tracking workflow
 
-- AI-based resume parsing
-- Resume-to-job matching
-- Resume scoring system
-- Admin dashboard for recruiters
-- Export parsed data (CSV / JSON)
+## 🔒 Security Notes
 
----
+API keys stored in .env.local
 
-## License
+Keys never exposed to frontend
 
-This project is intended for learning, demo, and assessment purposes only.
+.env.local ignored by Git
+
+Safe for GitHub publishing
+
+## 📌 Assumptions & Trade-offs
+
+Single-user environment assumed
+
+Authentication not implemented
+
+Focus is on parsing and tracking functionality
+
+Resume files themselves are not stored, only extracted data
+
+## ✨ Possible Future Improvements
+
+User authentication
+
+Resume file storage
+
+Advanced filtering/search
+
+Analytics dashboard
+
+Resume preview viewer
+
+Export parsed data
+
+## 🧑‍💻 Author
+
+Developed as part of a Full Stack Developer assignment demonstrating:
+
+Next.js full-stack architecture
+
+API integration
+
+Structured data parsing
+
+Database integration
+
+Responsive UI development
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+
