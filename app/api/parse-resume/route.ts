@@ -2,11 +2,18 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: Request) {
+  console.log("===== API HIT =====");
+
   try {
     const formData = await req.formData();
-    const file = formData.get("file") as File;
+    const file = formData.get("file") as File | null;
 
     if (!file) {
       return NextResponse.json(
@@ -15,58 +22,84 @@ export async function POST(req: Request) {
       );
     }
 
-    let text = "";
-    try {
-      text = await file.text();
-    } catch {
-      text = "";
-    }
+    console.log("File received:", file.name);
 
-    const emailMatch = text.match(
-      /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i
+    // Convert file to base64
+    const buffer = Buffer.from(
+      await file.arrayBuffer()
     );
 
-    const phoneMatch = text.match(
-      /(\+91[\s-]?\d{10}|\b\d{10}\b)/
-    );
+    const base64 = buffer.toString("base64");
 
-    const phone = phoneMatch
-      ? phoneMatch[0].replace(/\s+/g, "")
-      : "Not found";
+    console.log("Sending PDF to OpenAI...");
 
-    let full_name = file.name
-      .replace(/\.[^/.]+$/, "")
-      .replace(/[_\-]/g, " ")
-      .replace(/resume|cv/gi, "")
-      .replace(/\d+/g, "")
-      .trim();
+    // Send PDF directly to OpenAI
+    const completion =
+      await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        temperature: 0,
+        messages: [
+          {
+            role: "system",
+            content:
+              'Extract full_name, email and phone from this resume. Return ONLY JSON: {"full_name":"","email":"","phone":""}',
+          },
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Extract candidate details.",
+              },
+              {
+                type: "file",
+                file: {
+                  filename: file.name,
+                  file_data: `data:application/pdf;base64,${base64}`,
+                },
+              },
+            ],
+          },
+        ],
+      });
 
-    if (!full_name || full_name.length < 3) {
-      full_name = "Unknown";
-    }
+    console.log("OpenAI response received");
 
-    const { error } = await supabase.from("resumes").insert({
-      full_name: full_name.slice(0, 50),
-      email: emailMatch?.[0] || "Not found",
+    const content =
+      completion.choices[0].message.content || "{}";
+
+    const match =
+      content.match(/\{[\s\S]*\}/);
+
+    const data = match
+      ? JSON.parse(match[0])
+      : {};
+
+    const full_name =
+      data.full_name || "Unknown";
+    const email =
+      data.email || "Not found";
+    const phone =
+      data.phone || "Not found";
+
+    console.log("Parsed:", full_name, email, phone);
+
+    await supabase.from("resumes").insert({
+      full_name,
+      email,
       phone,
     });
 
-    if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
-    }
+    console.log("Saved successfully");
 
     return NextResponse.json({
       success: true,
-      data: {
-        full_name,
-        email: emailMatch?.[0] || "Not found",
-        phone,
-      },
+      data: { full_name, email, phone },
     });
+
   } catch (err) {
+    console.error("Parsing failed:", err);
+
     return NextResponse.json(
       { error: "Failed to parse resume" },
       { status: 500 }
