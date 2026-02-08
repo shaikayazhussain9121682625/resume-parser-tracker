@@ -72,39 +72,37 @@ This project was developed as part of a full-stack development assignment to dem
 ```text
 resume-parser-tracker/
 ├── app/
-│   ├── api/
-│   │   ├── parse-resume/
-│   │   │   └── route.ts
-│   │   └── resumes/
-│   │       └── route.ts
-│   │
-│   ├── dashboard/
-│   │   └── page.tsx
-│   ├── jobs/
-│   │   └── page.tsx
-│   ├── resumes/
-│   │   └── page.tsx
-│   ├── upload/
-│   │   └── page.tsx
-│   │
-│   ├── favicon.ico
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
+│ ├── api/
+│ │ └── parse-resume/
+│ │ └── route.ts
+│ │
+│ ├── dashboard/
+│ │ └── page.tsx
+│ ├── jobs/
+│ │ └── page.tsx
+│ ├── resumes/
+│ │ └── page.tsx
+│ ├── upload/
+│ │ └── page.tsx
+│ │
+│ ├── favicon.ico
+│ ├── globals.css
+│ ├── layout.tsx
+│ └── page.tsx
 │
 ├── components/
-│   ├── Navbar.tsx
-│   └── PageTransition.tsx
+│ ├── Navbar.tsx
+│ └── PageTransition.tsx
 │
 ├── lib/
-│   └── supabase.ts
+│ └── supabase.ts
 │
 ├── public/
-│   ├── file.svg
-│   ├── globe.svg
-│   ├── next.svg
-│   ├── vercel.svg
-│   └── window.svg
+│ ├── file.svg
+│ ├── globe.svg
+│ ├── next.svg
+│ ├── vercel.svg
+│ └── window.svg
 │
 ├── .env.local
 ├── .gitignore
