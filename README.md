@@ -41,23 +41,46 @@ Users can upload resume files (PDF/DOCX), parse relevant details, and manage res
 
 ## Folder Structure
 
-resume-parser/
+resume-parser-tracker/
+│
 ├── app/
-│   ├── page.tsx
+│   ├── api/
+│   │   └── parse-resume/
+│   │       └── route.ts
+│   │
+│   ├── dashboard/
+│   │   └── page.tsx
+│   │
+│   ├── jobs/
+│   │   └── page.tsx
+│   │
+│   ├── resumes/
+│   │   └── page.tsx
+│   │
 │   ├── upload/
-│   └── api/
-│       └── parse-resume/
-│           └── route.ts
+│   │   └── page.tsx
+│   │
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+│
 ├── components/
-│   ├── UploadResume.tsx
-│   └── ResumeList.tsx
+│   ├── Navbar.tsx
+│   └── PageTransition.tsx
+│
 ├── lib/
-│   └── supabaseClient.ts
-├── styles/
+│   └── supabase.ts
+│
 ├── public/
+│
 ├── .env.local
+├── .gitignore
+├── next.config.ts
 ├── package.json
+├── tailwind.config.js
+├── tsconfig.json
 └── README.md
+
 
 ---
 
